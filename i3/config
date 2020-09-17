@@ -1,0 +1,278 @@
+#----------------------------------------
+#First-thing-first
+#----------------------------------------
+
+
+gaps inner 10
+#gaps outer 3
+#smart_gaps on
+font pango:Cantarell 8
+popup_during_fullscreen smart #smart|ignore|leave_fullscreen
+
+
+#----------------------------------------
+#Startup applications
+#----------------------------------------
+
+exec --no-startup-id feh --bg-scale $HOME/Immagini/walls/pineapple-gruvbox.jpg
+exec --no-startup-id picom -cbGf -o 0.50 -t 2 -l 2 -r 5 -D 3 -i 100
+exec --no-startup-id setxkbmap -option esperanto:qwerty
+exec_always --no-startup-id urxvtd -q -f -o #urxvt daemon
+
+
+#----------------------------------------
+#Keyboard shortcuts
+#----------------------------------------
+
+
+set $mod Mod4
+floating_modifier $mod
+bindsym $mod+u [urgent=latest] focus
+bindsym $mod+Shift+Q kill
+
+bindsym Print exec --no-startup-id scrot ~/Immagini/%Y-%m-%d-%s.png
+
+#Audio-binding
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q sset Master 2%+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q sset Master 2%-
+bindsym XF86AudioMute  exec --no-startup-id amixer -q sset Master toggle
+
+bindsym XF86AudioPlay exec --no-startup-id "playerctl play-pause"
+bindsym XF86AudioNext exec --no-startup-id "playerctl next"
+bindsym XF86AudioPrev exec --no-startup-id "playerctl previous"
+bindsym XF86AudioStop exec --no-startup-id "playerctl stop"
+
+#backlight requires light-git
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 1 # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 1 # decrease screen brightness
+
+bindsym $mod+Return exec --no-startup-id urxvtc
+bindsym $mod+i exec --no-startup-id firefox
+
+# bindsym $mod+space exec --no-startup-id rofi -show drun -modi drun -font "hack 20" -threads 12 -lines 15 -width 35
+bindsym $mod+space exec --no-startup-id dmenu_run -i -l 5 -nb '#fbf1c7' -nf '#3c3836' -sb '#9d0006' -sf '#fbf1c7' -fn "pango:Hack:size=12"
+
+# There also is the (new) i3-dmenu-desktop which only displays applications
+# shipping a .desktop file. It is a wrapper around dmenu, so you need that
+# installed.
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# change focus
+#bindsym $mod+j focus left
+#bindsym $mod+k focus down
+#bindsym $mod+l focus up
+#bindsym $mod+semicolon focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+#bindsym $mod+right-click floating resize
+
+# change focus between tiling / floating windows
+#bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+bindsym $mod+d focus child
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 5 px or 5 ppt
+        bindsym k resize grow height 5 px or 5 ppt
+        bindsym l resize shrink height 5 px or 5 ppt
+        bindsym semicolon resize grow width 5 px or 5 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+#system exit/sleep modes, from arch-wiki
+# set $Locker i3lock-fancy && sleep 1
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id $Locker, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym s exec --no-startup-id $Locker && systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id $Locker && systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+e  mode "$mode_system"
+
+
+#----------------------------------------
+#Windows and borders
+#----------------------------------------
+
+
+#if current workspace is the one you switch to then go to last workspace
+workspace_auto_back_and_forth yes
+
+#completely remove border for all windows
+for_window [class="^.*"] border pixel 2
+
+#window title and edge bar
+#class                  border      backgr      text        indicator   child_border
+client.focused          #fbf1c7     #fbf1c7     #1d2021     #d79921     #fbf1c7
+client.focused_inactive #1d2021     #1d2021     #fbf1c7     #484e50     #928374
+client.urgent           #fe8019     #fb4934     #ebdbb2     #900000     #900000
+client.placeholder      #000000     #0c0c0c     #ebdbb2     #000000     #0c0c0c
+client.background       #ffffff
+
+
+hide_edge_borders vertical
+hide_edge_borders both
+
+#windows which should never have title and edge bar
+for_window [class="firefox"] border pixel 0
+
+#----------------------------------------
+#Workspaces
+#----------------------------------------
+
+#worspace navigation keys binding
+bindsym $mod+period workspace next
+bindsym $mod+comma workspace prev
+bindsym $mod+shift+period move container to workspace next
+bindsym $mod+shift+comma move container to workspace prev
+bindsym $mod+Tab workspace back_and_forth
+
+#assign names to workspaces
+set $workspace1 "1 "
+set $workspace2 "2 "
+set $workspace3 "3 "
+set $workspace4 "4 "
+set $workspace5 "5 "
+set $workspace6 "6 "
+set $workspace7 "7 "
+set $workspace8 "8 "
+set $workspace9 "9 "
+set $workspace10 "10 "
+
+# switch to workspace
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
+bindsym $mod+0 workspace $workspace10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9
+bindsym $mod+Shift+0 move container to workspace $workspace10
+
+#assign windows to different workspaces
+assign [class="Chromium"] $workspace3
+assign [class="firefox"] $workspace3
+assign [class="Spotify"] $workspace6
+assign [class="Vlc"] $workspace4
+assign [class="mpv"] $workspace4
+assign [class="Inkscape"] $workspace4
+assign [class="Evince"] $workspace4
+assign [class="Slack"] $workspace4
+assign [class="Atom"] $workspace1
+assign [class="Sublime_text"] $workspace1
+assign [class="Telegram"] $workspace4
+assign [class="Discord"] $workspace4
+assign [class="Steam"] $workspace5
+assign [class="Zathura"] $workspace7
+assign [class="Thunar"] $workspace7
+assign [class="jetbrains-studio"] $workspace1
+
+#if window with particular class is in another workspace, switch to it immediately
+for_window [class="URxvt"] focus
+for_window [class="st"] focus
+for_window [class="Chromium"] focus
+for_window [class="Firefox"] focus
+for_window [class="mpv"] focus
+for_window [class="Vlc"] focus
+for_window [class="Evince"] focus
+for_window [class="feh"] focus
+
+bar {
+    status_command i3status
+    position top
+    height 50
+    tray_output none
+    font pango: Hack 10, FontAwesome 10
+    colors {
+        statusline #fbf1c7
+        background #1d2021
+        inactive_workspace #1d2021 #1d2021 #fbf1c7
+        active_workspace #1d2021 #1d2021 #fbf1c7
+        focused_workspace #fbf1c7 #fbf1c7 #1d2021
+        urgent_workspace #cc241d #cc241d #fbf1c7
+    }
+}
+
+new_window pixel 0
